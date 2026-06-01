@@ -10,6 +10,10 @@ public class BallExitTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (hasTriggered)
+        {
+            return;
+        }
         if (other.CompareTag("Ball"))
         {
             hasTriggered = true;
