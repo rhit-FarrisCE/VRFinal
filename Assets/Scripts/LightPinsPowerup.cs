@@ -8,7 +8,6 @@ public class LightPinsPowerup : MonoBehaviour
 
     private List<BowlingPin> pins = new List<BowlingPin>();
     private static float og_pin_mass = 5f;
-    private bool active = false;
 
     public void setActive()
     {
