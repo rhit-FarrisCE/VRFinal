@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PinManager : MonoBehaviour
@@ -41,5 +42,26 @@ public class PinManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void RemoveDownedPins()
+    {
+        foreach (BowlingPin pin in pins)
+        {
+            if (pin.isDown)
+            {   
+                pin.Reset();
+                pin.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public void ResetAllPins()
+    {
+        foreach (BowlingPin pin in pins)
+        {   
+            pin.gameObject.SetActive(true);   
+            pin.Reset();
+        }
     }
 }

@@ -11,11 +11,13 @@ public class BowlingPin : MonoBehaviour
     private Rigidbody rb;
     public bool isDown;
     private Quaternion initialRotation;
+    private Vector3 initialPosition;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         initialRotation = transform.rotation;
+        initialPosition = transform.position;
 
         PinManager.Instance.RegisterPin(this);
     }
@@ -32,5 +34,15 @@ public class BowlingPin : MonoBehaviour
         {
             isDown = true;
         }
+    }
+
+    public void Reset()
+    {
+        isDown = false;
+        transform.position = initialPosition;
+        transform.rotation = initialRotation;
+
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
     }
 }

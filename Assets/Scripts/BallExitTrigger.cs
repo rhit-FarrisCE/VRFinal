@@ -1,12 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class BallExitTrigger : MonoBehaviour
 {
+
+    [Header("Text GUI Counter")]
+    public TextMeshProUGUI pinCounter;
     
     public float timeBeforeScoring = 3f;
     private bool hasTriggered = false;
+
+    private int numThrows = 0;
+
+    private int totalScore = 0;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -17,18 +25,35 @@ public class BallExitTrigger : MonoBehaviour
         if (other.CompareTag("Ball"))
         {
             hasTriggered = true;
-            StartCoroutine(ScoreAfterDelay());
+            numThrows += 1;
+            StartCoroutine(ScoreAfterDelay(other));
         }
     }
 
-    private IEnumerator ScoreAfterDelay()
+    private IEnumerator ScoreAfterDelay(Collider other)
     {
         yield return new WaitForSeconds(timeBeforeScoring);
 
-        int pinsDownCount = PinManager.Instance.GetPinsDown();
-        int total = PinManager.Instance.GetTotalPins();
+        Ball ball = other.GetComponentInParent<Ball>();
+        ball.Reset();
 
-        Debug.Log("Pins knocked down: " + pinsDownCount + " out of " + total + ".");
+        hasTriggered = false;
+        int pinsDownCount = PinManager.Instance.GetPinsDown();
+        int totalPins = PinManager.Instance.GetTotalPins();
+
+        totalScore += pinsDownCount;
+
+        PinManager.Instance.RemoveDownedPins();
+
+        pinCounter.text = totalScore.ToString();
+
+        if (numThrows == 2 || pinsDownCount == totalPins)
+        {
+            PinManager.Instance.ResetAllPins();
+            numThrows = 0;
+        }
+
+        Debug.Log("Pins knocked down: " + pinsDownCount + " out of " + totalPins + ".");
     }
 
     // Update is called once per frame
