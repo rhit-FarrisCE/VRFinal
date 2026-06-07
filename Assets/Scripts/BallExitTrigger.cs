@@ -8,6 +8,7 @@ public class BallExitTrigger : MonoBehaviour
 
     [Header("Text GUI Counter")]
     //public TextMeshProUGUI pinCounter;
+    public ScoreKeeper scoreKeeper;
     
     public float timeBeforeScoring = 3f;
     private bool hasTriggered = false;
@@ -45,7 +46,7 @@ public class BallExitTrigger : MonoBehaviour
 
         PinManager.Instance.RemoveDownedPins();
 
-        //pinCounter.text = totalScore.ToString();
+        scoreKeeper.UpdateScore(pinsDownCount);
 
         if (numThrows == 2 || pinsDownCount == totalPins)
         {

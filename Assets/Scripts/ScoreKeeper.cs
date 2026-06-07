@@ -74,7 +74,7 @@ public class ScoreKeeper : MonoBehaviour
         }
     }
 
-    void UpdateScore(int pinsDownCount)
+    public void UpdateScore(int pinsDownCount)
     {
         if (currentRound > 3)
         {
