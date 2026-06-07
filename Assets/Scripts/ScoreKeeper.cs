@@ -6,6 +6,7 @@ using TMPro;
 public class ScoreKeeper : MonoBehaviour
 {
     public static ScoreKeeper Instance;
+    public ProgressionManager progressionManager;
     private int totalScore = 0;
     public int roundScore = 0;
     public int currentRound = 1;
@@ -23,12 +24,12 @@ public class ScoreKeeper : MonoBehaviour
     private TextMeshProUGUI[] round2Scores;
     private TextMeshProUGUI[] round3Scores;
     private TextMeshProUGUI[][] allScores;
-    private bool lastRoundSpare = false;
-    private bool lastRoundStrike = false;
     
     // Store actual pin counts for scoring calculation
     private int[][] roundPins = new int[3][]; // 3 rounds, 2 throws each
     private int[] roundTotalScores = new int[3]; // Final score for each round
+    private bool[] roundWasStrike = new bool[3]; // Track strikes by round
+    private bool[] roundWasSpare = new bool[3]; // Track spares by round
     // Start is called before the first frame update
     void Start()
     {
@@ -55,15 +56,19 @@ public class ScoreKeeper : MonoBehaviour
 
     public void ResetScore()
     {
+        // Progresses the game when the score keeper resets
+        // Progression doesn't happen unless the total is greater than the minimal score needed
+        progressionManager.Progress(totalScore);
+
         totalScore = 0;
         roundScore = 0;
         currentRound = 1;
         currentThrow = 1;
-        lastRoundSpare = false;
-        lastRoundStrike = false;
         for (int i = 0; i < 3; i++)
         {
             roundTotalScores[i] = 0;
+            roundWasStrike[i] = false;
+            roundWasSpare[i] = false;
             for (int j = 0; j < 2; j++)
             {
                 roundPins[i][j] = 0;
@@ -83,8 +88,8 @@ public class ScoreKeeper : MonoBehaviour
         {
             // Strike on first throw
             allScores[currentRound - 1][currentThrow - 1].text = "X";
-            lastRoundStrike = true;
-            lastRoundSpare = false;
+            roundWasStrike[currentRound - 1] = true;
+            roundWasSpare[currentRound - 1] = false;
             currentRound += 1;
             currentThrow = 1;
             roundScore = 0;
@@ -96,8 +101,8 @@ public class ScoreKeeper : MonoBehaviour
             // First throw (non-strike)
             allScores[currentRound - 1][0].text = pinsDownCount.ToString();
             roundScore = pinsDownCount;
-            lastRoundSpare = false;
-            lastRoundStrike = false;
+            roundWasSpare[currentRound - 1] = false;
+            roundWasStrike[currentRound - 1] = false;
             currentThrow = 2;
         }
         else if (currentThrow == 2)
@@ -110,13 +115,13 @@ public class ScoreKeeper : MonoBehaviour
             if (roundScore >= 10)
             {
                 allScores[currentRound - 1][1].text = "/";
-                lastRoundSpare = true;
-                lastRoundStrike = false;
+                roundWasSpare[currentRound - 1] = true;
+                roundWasStrike[currentRound - 1] = false;
             }
             else
             {
-                lastRoundSpare = false;
-                lastRoundStrike = false;
+                roundWasSpare[currentRound - 1] = false;
+                roundWasStrike[currentRound - 1] = false;
             }
 
             // Calculate score for current round
@@ -136,18 +141,62 @@ public class ScoreKeeper : MonoBehaviour
         int throw1 = roundPins[roundIndex][0];
         int throw2 = roundPins[roundIndex][1];
 
-        // Check if previous round was a strike or spare
-        if (roundIndex > 0)
+        // Check if previous round and the round before was a strike or spare
+        if (roundIndex > 1)
         {
-            if (lastRoundStrike)
+            if (roundWasStrike[roundIndex - 1])
+            {
+                if (roundWasStrike[roundIndex])
+                {
+                    score = 50;
+                }
+                if (roundWasStrike[roundIndex - 2])
+                {
+                    score = (throw1 + throw2) * 2 + 30;
+                } 
+                else if (roundWasSpare[roundIndex - 2])
+                {
+                    score = (throw1 + throw2) * 2 + 20;
+                }
+            } 
+            else
+            {
+                if (roundWasStrike[roundIndex - 1])
+                {
+                    // If last round was a strike, double this round's score
+                    score = (throw1 + throw2) * 2 + 10;
+                }
+                else if (roundWasSpare[roundIndex - 1])
+                {
+                    // If last round was a spare, double first throw
+                    score = (throw1 * 2) + throw2;
+                }
+                else if (roundWasStrike[roundIndex])
+                {
+                    score = 10;
+                }
+                else
+                {
+                    score = throw1 + throw2;
+                }
+            }
+            // Check if previous round was a strike or spare
+        } 
+        else if (roundIndex > 0)
+        {
+            if (roundWasStrike[roundIndex - 1])
             {
                 // If last round was a strike, double this round's score
-                score = (throw1 + throw2) * 2;
+                score = (throw1 + throw2) * 2 + 10;
             }
-            else if (lastRoundSpare)
+            else if (roundWasSpare[roundIndex - 1])
             {
                 // If last round was a spare, double first throw
                 score = (throw1 * 2) + throw2;
+            }
+            else if (roundWasStrike[roundIndex])
+            {
+                score = 10;
             }
             else
             {
