@@ -53,7 +53,7 @@ public class ScoreKeeper : MonoBehaviour
         
     }
 
-    private void ResetScore()
+    public void ResetScore()
     {
         totalScore = 0;
         roundScore = 0;
@@ -76,12 +76,6 @@ public class ScoreKeeper : MonoBehaviour
 
     public void UpdateScore(int pinsDownCount)
     {
-        if (currentRound > 3)
-        {
-            ResetScore();
-            return;
-        }
-
         // Store the pin count
         roundPins[currentRound - 1][currentThrow - 1] = pinsDownCount;
 

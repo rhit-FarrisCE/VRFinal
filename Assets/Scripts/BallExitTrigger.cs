@@ -44,9 +44,9 @@ public class BallExitTrigger : MonoBehaviour
 
         totalScore += pinsDownCount;
 
-        PinManager.Instance.RemoveDownedPins();
-
         scoreKeeper.UpdateScore(pinsDownCount);
+
+        PinManager.Instance.RemoveDownedPins();
 
         if (numThrows == 2 || pinsDownCount == totalPins)
         {
@@ -54,7 +54,19 @@ public class BallExitTrigger : MonoBehaviour
             numThrows = 0;
         }
 
+        // Check if game is finished after score update
+        if (scoreKeeper.currentRound > 3)
+        {
+            StartCoroutine(ResetScoreAfterDelay(3f));
+        }
+
         Debug.Log("Pins knocked down: " + pinsDownCount + " out of " + totalPins + ".");
+    }
+
+    private IEnumerator ResetScoreAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        scoreKeeper.ResetScore();
     }
 
     // Update is called once per frame
