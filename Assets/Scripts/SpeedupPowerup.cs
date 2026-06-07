@@ -1,12 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class SpeedupPowerup : MonoBehaviour
+public class SpeedupPowerup : Powerup
 {
 
-    public float speedMultipler = 2f;
+    private float speedMultiplier;
     private bool hasTriggered = false;
+
+    public void Initialize(int rarity, float speedMultiplier, string name)
+    {
+        this.rarity = rarity;
+        this.speedMultiplier = speedMultiplier;
+        this.name = name;
+    }
+    
+    public override void UpdatePowerup(Powerup otherPowerup)
+    {
+        SpeedupPowerup other = (SpeedupPowerup) otherPowerup;
+        speedMultiplier += other.getMult();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -14,7 +28,7 @@ public class SpeedupPowerup : MonoBehaviour
         {
             hasTriggered = true;
             Rigidbody rb = other.GetComponent<Rigidbody>();
-            rb.velocity *= speedMultipler;
+            rb.velocity *= speedMultiplier;
         }
     }
     private void OnTriggerExit(Collider other)
@@ -22,15 +36,10 @@ public class SpeedupPowerup : MonoBehaviour
         hasTriggered = false;
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public float getMult()
     {
-        
+        return speedMultiplier;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

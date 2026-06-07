@@ -38,12 +38,6 @@ public class PinManager : MonoBehaviour
         return pins.Count;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void RemoveDownedPins()
     {
         foreach (BowlingPin pin in pins)
