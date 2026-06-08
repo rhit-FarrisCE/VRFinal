@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using TMPro;
+using Unity.VisualScripting;
 
 public class ProgressionManager : MonoBehaviour
 {
@@ -45,7 +46,7 @@ public class ProgressionManager : MonoBehaviour
             if (!menu.enabled)
             {
                 sk.SetActive(false);
-                menu.enabled = true;
+                menu.gameObject.SetActive(true);
                 endMenu.SetActive(true);
                 end.text = "Game Over!\nHigh Score: " + highScore.ToString() + "\nWould you like to restart?";
             }
