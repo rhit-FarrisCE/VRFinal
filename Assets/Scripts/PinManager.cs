@@ -58,4 +58,9 @@ public class PinManager : MonoBehaviour
             pin.Reset();
         }
     }
+
+    public List<BowlingPin> GetPins()
+    {
+        return pins;
+    }
 }

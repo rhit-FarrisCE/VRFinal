@@ -26,6 +26,11 @@ public abstract class Powerup : MonoBehaviour
     }
 
     public abstract void UpdatePowerup(Powerup otherPowerup);
+    public abstract string GetDescription();
+
+    public abstract void SetActive();
+
+    public abstract void SetInactive();
 
     public int getRarity()
     {

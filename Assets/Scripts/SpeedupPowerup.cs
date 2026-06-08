@@ -7,13 +7,15 @@ public class SpeedupPowerup : Powerup
 {
 
     private float speedMultiplier;
-    private bool hasTriggered = false;
+
+    private GameObject trigger;
 
     public void Initialize(int rarity, float speedMultiplier, string name)
     {
         this.rarity = rarity;
         this.speedMultiplier = speedMultiplier;
         this.name = name;
+        trigger = GameObject.Find("SpeedupTrigger");
     }
     
     public override void UpdatePowerup(Powerup otherPowerup)
@@ -22,24 +24,32 @@ public class SpeedupPowerup : Powerup
         speedMultiplier += other.getMult();
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!hasTriggered && other.CompareTag("Ball"))
-        {
-            hasTriggered = true;
-            Rigidbody rb = other.GetComponent<Rigidbody>();
-            rb.velocity *= speedMultiplier;
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        hasTriggered = false;
-    }
-
     public float getMult()
     {
         return speedMultiplier;
     }
 
+    public override string GetDescription()
+    {
+        if (rarity == 0)
+        {
+            return "(COMMON) Speed + 50%";
+        } else if (rarity == 1)
+        {
+            return "(RARE) Speed + 100%";
+        } else
+        {
+            return "(EPIC) Speed + 200%";
+        }
+    }
 
+    public override void SetActive()
+    {
+        trigger.GetComponent<SpeedTrigger>().SetSpeedMod(speedMultiplier);
+    }
+
+    public override void SetInactive()
+    {
+        trigger.GetComponent<SpeedTrigger>().ResetSpeedMod();
+    }
 }

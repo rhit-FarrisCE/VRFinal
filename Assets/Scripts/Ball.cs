@@ -20,6 +20,9 @@ public class Ball : MonoBehaviour
         ballGrabInteractable = GetComponent<XRGrabInteractable>();
         startPos = transform.position;
         rb = GetComponent<Rigidbody>();
+
+        //Populate BallManager
+        
     }
 
     private void OnCollisionEnter(Collision collision)

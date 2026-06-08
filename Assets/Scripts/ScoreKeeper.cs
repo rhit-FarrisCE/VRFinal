@@ -130,6 +130,7 @@ public class ScoreKeeper : MonoBehaviour
             currentRound += 1;
             currentThrow = 1;
             roundScore = 0;
+
         }
     }
 

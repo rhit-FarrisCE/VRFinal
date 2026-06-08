@@ -17,16 +17,9 @@ public class ProgressionManager : MonoBehaviour
     public GameObject endMenu;
     public GameObject sk;
 
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    //Powerup menu important fields
+    [Header("Powerup UI important fields")]
+    public GameObject powerupUI;
 
     public void Progress(int totalScore)
     {
@@ -35,6 +28,9 @@ public class ProgressionManager : MonoBehaviour
         if (totalScore >= minScore)
         {
             minScore = (int)Math.Round(minScore * diffMulti);
+            //Initiate powerup selecton
+            powerupUI.SetActive(true);
+            PowerupManager.Instance.GeneratePowerups();
         } else if (minScore == 10 && totalScore == 0)
         {
             gameTotal = 0;
@@ -53,6 +49,7 @@ public class ProgressionManager : MonoBehaviour
                 endMenu.SetActive(true);
                 end.text = "Game Over!\nHigh Score: " + highScore.ToString() + "\nWould you like to restart?";
             }
+            PowerupManager.Instance.RemovePowerups();
         }
     }
 }
